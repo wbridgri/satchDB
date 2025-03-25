@@ -115,5 +115,18 @@ USING (employee_id);
 SELECT contract_id, client FROM contract 
 WHERE (completion_date > '2025-12-31');
 --12
-
+SELECT 
+    e.employee_id,
+    CASE 
+        WHEN EXISTS (SELECT 1 FROM transaction t WHERE t.employee_id = e.employee_id) 
+        THEN (SELECT SUM(t.amount) FROM transaction t WHERE t.employee_id = e.employee_id)
+        ELSE 'N/A'
+    END transaction_sales,
+    CASE 
+        WHEN EXISTS (SELECT 1 FROM contract c WHERE c.employee_id = e.employee_id) 
+        THEN (SELECT SUM(c.amount) FROM contract c WHERE c.employee_id = e.employee_id)
+        ELSE 'N/A'
+    END contract_sales
+FROM employee e
+ORDER BY e.employee_id;
 
